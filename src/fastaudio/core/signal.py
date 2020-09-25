@@ -62,7 +62,10 @@ class AudioTensor(TensorBase):
         "Creates audio tensor from file"
         if cache_folder is not None:
             fn = cache_folder / fn.name
-        sig, sr = torchaudio.load(fn, **kwargs)
+        try:
+            sig, sr = torchaudio.load(fn, **kwargs)
+        except RuntimeError:
+            sig, sr = torch.zeros([1, 1]), 1
         return cls(sig, sr=sr)
 
     @property
